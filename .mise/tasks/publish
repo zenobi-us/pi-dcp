@@ -3,7 +3,7 @@
 #MISE depends=["setup", "build"]
 #USAGE flag "-t --tag <tag>" "Tag to publish with" default="latest"
 #USAGE flag "-d --dry-run" "Perform a dry run of the publish process"
-#USAGE flag "--otp <otp>" "One-time password for npm two-factor authentication" default="
+#USAGE flag "--otp <otp>" "One-time password for npm two-factor authentication"
 set -e
 
 echo "Publishing to npm"

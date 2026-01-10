@@ -3,7 +3,7 @@
 #MISE depends=["setup", "build"]
 #USAGE flag "-t --tag <tag>" "Tag to publish with" default="latest"
 #USAGE flag "-d --dry-run" "Perform a dry run of the publish process"
-
+#USAGE flag "--otp <otp>" "One-time password for npm two-factor authentication" default="
 set -e
 
 echo "Publishing to npm"
@@ -32,24 +32,29 @@ if [ "${usage_tag}" = "next" ]; then
 	fi
 fi
 
+flags=()
+flags+=("--tag" "${usage_tag}")
+flags+=("--access" "public")
+
 if [ "${usage_dry_run}" != true ]; then
 	# Determine if we should use provenance
 	# Only enable in CI environments with OIDC support
-	PROVENANCE_FLAG=""
 	if [ -z "$GITHUB_ACTIONS" ]; then
 		# Local development: disable provenance (fails without CI provider context)
-		PROVENANCE_FLAG="--no-provenance"
 		echo " > provenance: disabled (local environment)"
 	else
 		# GitHub Actions: enable provenance (OIDC will handle it automatically)
 		echo " > provenance: enabled (GitHub Actions with OIDC)"
+		flags+=("--no-provenance")
+	fi
+
+	if [ -n "${usage_otp}" ]; then
+		flags+=("--otp" "${usage_otp}")
 	fi
 
 	# Publish directly from source (allows provenance generation in CI)
-	npm publish \
-		--access public \
-		--tag "${usage_tag}" \
-		$PROVENANCE_FLAG
+	npm publish "${flags[@]}"
+
 	echo "Published successfully!"
 else
 	echo "Dry run mode - skipping actual publish"

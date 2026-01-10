@@ -11,12 +11,10 @@ Intelligently prunes conversation context to optimize token usage while preservi
 
 ## Installation
 
-Add `@zenobi-us/pi-dcp` to your pi agent settings:
+Clone the repository into your pi agent extensions directory:
 
-```json
-{
-  "extensions": ["@zenobi-us/pi-dcp"]
-}
+```bash
+git clone https://github.com/zenobi-us/pi-dcp.git ~/.pi/agent/extensions/pi-dcp
 ```
 
 ## Usage

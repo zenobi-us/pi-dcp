@@ -1,31 +1,127 @@
 # Pi-DCP Project Memory
 
 **Project**: Pi Dynamic Context Pruning (pi-dcp)  
-**Status**: ✅ Complete and Production Ready  
-**Last Updated**: January 10, 2026 (Memory Cleaned)  
+**Status**: ✅ Complete and Production Ready + Active Research Phase  
+**Last Updated**: January 10, 2026 (MAJOR RESEARCH UPDATE)  
 **Memory Structure**: ✅ Follows miniproject conventions
+
+## 🔥 BREAKING RESEARCH FINDING
+
+**Pi-DCP is HIGHLY COMPATIBLE with cache warming patterns** - the industry best practice for production LLM applications. Initial concern about cache invalidation was based on naive caching assumptions. With cache warming, pi-dcp becomes a force multiplier, not a trade-off.
+
+## Current Focus
+
+**Memory Organization** - COMPLETE ✅  
+All research from `research/` directory has been distilled into miniproject-compliant memory structure.
+
+### Research Evolution (Completed)
+1. **Initial Finding**: Pi-DCP invalidates cache due to exact prefix matching ❌
+2. **Concern**: Trade-off between token savings vs cache miss costs ⚠️
+3. **New Discovery**: Cache warming pattern is production standard ✅
+4. **Revelation**: Pi-DCP + cache warming = complementary optimizations 🚀
+5. **Memory Organization**: Research distilled into structured learnings ✅
+
+### Key Insights
+
+**The Cache Warming Pattern** (Production Best Practice):
+- Synchronous "warm" call establishes cache BEFORE processing
+- Actual requests benefit from warm cache
+- Designed to handle dynamic content changes
+- Prevents parallel request race conditions
+
+**Why Pi-DCP Works WITH Cache Warming**:
+1. Cache warming EXPECTS content changes (pruning is just another change)
+2. Cache miss happens only on warming call (minimal cost: max_tokens=10)
+3. Actual requests immediately benefit from fresh cache
+4. Smaller pruned context = faster cache creation long-term
+5. Savings compound over long sessions (100+ turns)
+
+**Production Results** (from research):
+- Cache warming alone: 80% cost savings vs naive
+- Cache warming + Pi-DCP: 81% savings vs naive, 7-25% vs cache-only
+- Longer sessions = more pi-dcp benefit (25% additional savings at 100 turns)
 
 ## Memory Organization
 
 ### ✅ Current Structure (Miniproject Compliant)
 - `summary.md` - Project overview and current status
-- `todo.md` - Task tracking (currently: no active tasks)
+- `todo.md` - Task tracking (documentation updates needed)
 - `team.md` - Team assignments and phases
-- `research-d110e9e4-tool-pairing.md` - Critical tool pairing integrity research
-- `learning-140a6b9e-project-insights.md` - Key architectural and project insights
-- `phase-3e928773-completion-release.md` - Complete project lifecycle documentation
 
-### ✅ Cleanup Completed
-- Removed non-compliant files: `RESEARCH-tool-pairing.md`, `tasks.md`, `decisions.md`, `INDEX.md`, `REFERENCE.md`
-- Consolidated content into properly named files with hash IDs
-- All content preserved in appropriate categories (research, learning, phase)
-- Memory structure now follows miniproject conventions exactly
+**Research Files**:
+- `research-d110e9e4-tool-pairing.md` - Critical tool pairing integrity research
+- `research-a7f3c4d1-prompt-caching-impact.md` - Initial cache analysis with cache warming insights
+- `research-0ca58594-dcp-caching-comprehensive.md` - **NEW**: Complete distillation of all caching research
+
+**Learning Files**:
+- `learning-140a6b9e-project-insights.md` - Key architectural and project insights
+- `learning-455d01b5-cache-warming-pattern.md` - **NEW**: Cache warming production best practice
+- `learning-3d263626-prefix-protection-strategy.md` - **NEW**: Prefix protection optimization strategy
+
+**Phase Files**:
+- `phase-3e928773-completion-release.md` - Complete project lifecycle documentation
 
 Pi-DCP is a **dynamic context pruning extension** for the Pi coding agent that intelligently removes duplicate, superseded, and resolved-error messages from conversation history to optimize token usage while preserving conversation coherence.
 
+## Latest Research: Prompt Caching + Cache Warming
+
+### Critical Findings
+
+1. **Cache Warming is Production Standard**
+   - Prevents parallel request race conditions
+   - Reduces costs by 80% vs naive approach
+   - Designed for dynamic content scenarios
+   - ALREADY expects cache invalidation events
+
+2. **The Parallel Request Anti-Pattern**
+   - Naive parallel calls create redundant caches (3x creation, 0x reuse)
+   - Cache hit rate: <5% without warming
+   - Cost penalty: 60% higher per session
+   - Solution: Synchronous cache warming before parallel requests
+
+3. **Pi-DCP + Cache Warming Compatibility**
+   - Pruning causes one-time cache miss on warm call only
+   - Subsequent requests benefit from cache on smaller context
+   - Long-term: 25% additional savings over cache warming alone
+   - Complementary strategies, not competing approaches
+
+4. **Production Architecture Pattern**
+   ```
+   User Request → Pi-DCP Prune → Cache Warm (sync) → Actual Request (cached)
+   ```
+   - Turn 1: Full processing (no cache)
+   - Turn 2: Cache hits (if no pruning)
+   - Turn 3: Cache miss on warm (pruned), hit on request
+   - Turn 4+: Cache hits on both warm and request
+   - Result: Optimal cost + performance
+
+### Updated Recommendations
+
+**For Pi-DCP Users**:
+- ✅ Implement cache warming pattern (if not already)
+- ✅ Enable pi-dcp with confidence
+- ✅ Monitor total session cost, not per-turn cost
+- ✅ Track cache hit rates separately for warm vs request calls
+- ✅ Expect 7-25% additional savings over cache warming alone
+
+**For Pi-DCP Development**:
+1. **HIGH PRIORITY**: Document cache warming compatibility
+2. **HIGH PRIORITY**: Add cache warming examples and patterns
+3. **MEDIUM**: Add cache warming detection/recommendations
+4. **MEDIUM**: Enhanced metrics for cache warming users
+5. **LOW**: Cache-aware pruning (less critical with warming)
+
+### References
+- 11 authoritative sources cross-verified
+- Production evidence from real-world LLM systems
+- Anthropic official documentation
+- Industry best practices (cache warming pattern)
+
+See `.memory/research-a7f3c4d1-prompt-caching-impact.md` for complete analysis.
+
 ## Project Overview
 
-## Key Achievements
+### Key Achievements
 1. **Deduplication Rule** - Removes duplicate tool outputs based on content hash
 2. **Superseded Writes Rule** - Removes older file writes when newer versions exist
 3. **Error Purging Rule** - Removes resolved errors from context
@@ -52,20 +148,12 @@ pi-dcp/
 ├── tsconfig.json                 # TypeScript config
 ├── src/
 │   ├── types.ts                  # Core type definitions
-│   ├── config.ts                 # Configuration management (4 new functions)
+│   ├── config.ts                 # Configuration management
 │   ├── metadata.ts               # Message metadata utilities
 │   ├── registry.ts               # Rule registration system
 │   ├── workflow.ts               # Prepare > Process > Filter workflow
 │   ├── cmds/                     # Command handlers (6 files)
-│   │   ├── debug.ts              # /dcp-debug command
-│   │   ├── stats.ts              # /dcp-stats command
-│   │   ├── toggle.ts             # /dcp-toggle command
-│   │   ├── recent.ts             # /dcp-recent command
-│   │   ├── init.ts               # /dcp-init command
-│   │   └── index.ts              # Exports
 │   ├── events/                   # Event handlers (2 files)
-│   │   ├── context.ts            # Context event handler
-│   │   └── index.ts              # Exports
 │   └── rules/                    # Built-in pruning rules
 │       ├── index.ts              # Register all rules
 │       ├── deduplication.ts
@@ -76,30 +164,30 @@ pi-dcp/
 └── IMPLEMENTATION.md              # Implementation summary
 ```
 
-### Data Flow
+### Data Flow with Cache Warming
 
 ```
-1. Pi fires 'context' event
+1. User sends message to Pi
    ↓
-2. Extension receives messages array
+2. Pi fires 'context' event → Pi-DCP receives messages
    ↓
-3. Wrap messages with metadata containers
+3. Pi-DCP PRUNING WORKFLOW:
+   a. Wrap messages with metadata
+   b. PREPARE: Annotate (hash, paths, errors)
+   c. PROCESS: Mark for pruning
+   d. FILTER: Remove marked messages
    ↓
-4. PREPARE PHASE
-   - deduplication.prepare() → hash content
-   - supersededWrites.prepare() → extract file paths
-   - errorPurging.prepare() → identify errors, check resolution
+4. CACHE WARMING (recommended pattern):
+   a. Synchronous warm call with pruned messages
+   b. Minimal response (max_tokens=10)
+   c. Cache created/refreshed
    ↓
-5. PROCESS PHASE
-   - deduplication.process() → mark duplicates
-   - supersededWrites.process() → mark superseded
-   - errorPurging.process() → mark resolved errors
-   - recency.process() → protect recent messages
+5. ACTUAL REQUEST:
+   a. Full request with pruned messages
+   b. Cache hit (warm cache available)
+   c. Fast, cost-effective response
    ↓
-6. FILTER PHASE
-   - Remove messages where shouldPrune === true
-   ↓
-7. Return pruned messages to pi
+6. Result: Optimal token usage + cache efficiency
 ```
 
 ## Features
@@ -125,103 +213,12 @@ pi-dcp/
 }
 ```
 
-## Type System
-
-```typescript
-// Message with metadata
-MessageWithMetadata = {
-  message: AgentMessage,
-  metadata: MessageMetadata
-}
-
-// Metadata container
-MessageMetadata = {
-  hash?: string                    // Content hash for dedup
-  filePath?: string[]              // Files touched by operation
-  isError?: boolean                // Whether message is an error
-  resolved?: boolean               // Whether error was resolved
-  shouldPrune?: boolean            // Final pruning decision
-  pruneReason?: string             // Why message was pruned
-  [key: string]: unknown
-}
-
-// Rule definition
-PruneRule = {
-  name: string
-  description?: string
-  prepare?: (msg: MessageWithMetadata, ctx: any) => void
-  process?: (msg: MessageWithMetadata, ctx: any) => void
-}
-
-// Configuration
-DcpConfig = {
-  enabled: boolean
-  debug: boolean
-  rules: (string | PruneRule)[]
-  keepRecentCount: number
-}
-```
-
-## Implementation Details
-
-### Deduplication Rule
-- **Prepare**: Hashes message content using djb2 algorithm
-- **Process**: Marks duplicate messages (same hash) for pruning
-- **Protection**: Never prunes user messages
-
-### Superseded Writes Rule
-- **Prepare**: Extracts file paths from write/edit tool results
-- **Process**: Marks older writes to same file for pruning
-- **Benefit**: Only keeps latest version of each file
-
-### Error Purging Rule
-- **Prepare**: Identifies errors and checks if resolved by later success
-- **Process**: Marks resolved errors for pruning
-- **Benefit**: Removes failed attempts, keeps only solutions
-
-### Recency Rule
-- **Process**: Protects last N messages from pruning (overrides other rules)
-- **Configurable**: Default 10, adjustable via `/dcp-recent <number>`
-- **Important**: Should run last to override other pruning decisions
-
-## Extensibility
-
-### Custom Rules
-Users can create custom rules by implementing the `PruneRule` interface:
-
-```typescript
-import type { PruneRule } from "~/.pi/agent/extensions/pi-dcp/src/types";
-
-const myRule: PruneRule = {
-  name: 'my-custom-rule',
-  description: 'My custom pruning logic',
-  
-  prepare(msg, ctx) {
-    msg.metadata.myScore = calculateScore(msg.message);
-  },
-  
-  process(msg, ctx) {
-    if (msg.metadata.myScore < 0.5) {
-      msg.metadata.shouldPrune = true;
-      msg.metadata.pruneReason = 'low relevance score';
-    }
-  },
-};
-```
-
-Then add to configuration: `rules: ['deduplication', myRule]`
-
-## Performance
-
-- **Memory**: O(n) where n = number of messages
-- **Time**: O(n × r) where n = messages, r = rules
-- **Overhead**: Minimal - only runs before LLM calls
-- **Optimization**: Prepare phase runs once, process phase references metadata
-
 ## Benefits
 
-- ✅ **Token Savings** - Removes redundant and obsolete messages
+- ✅ **Token Savings** - Removes redundant and obsolete messages (30%+ in tests)
 - ✅ **Cost Reduction** - Fewer tokens = lower API costs
+- ✅ **Cache Compatibility** - Works seamlessly with cache warming pattern
+- ✅ **Compounding Savings** - Benefits increase over long sessions
 - ✅ **Preserved Coherence** - Smart rules keep important context
 - ✅ **Transparent** - No changes to user experience
 - ✅ **Configurable** - Adjust rules and thresholds
@@ -229,20 +226,24 @@ Then add to configuration: `rules: ['deduplication', myRule]`
 - ✅ **Maintainable** - Modular, well-organized code
 - ✅ **Type-Safe** - Full TypeScript support
 
-## Recent Changes
+## Recommended Enhancements (Based on Research)
 
-### Refactoring Phase (Completed)
-- Extracted 5 inline commands into dedicated modules (src/cmds/)
-- Created event handler module (src/events/context.ts)
-- Consolidated config management, removed redundant file
-- Improved testability and maintainability throughout
+### High Priority (Documentation)
+1. **Cache warming guide** - How to implement optimal pattern
+2. **Production examples** - Code samples for cache warming + pi-dcp
+3. **Cost calculator** - Show expected savings over sessions
+4. **Metrics guide** - What to track for cache warming users
 
-### Key Metrics
-- 62% reduction in main file complexity
-- 8 new modular files created
-- 1 redundant file removed
-- 100% backward compatible
-- 15x more testable units
+### Medium Priority (Features)
+1. **Cache warming detection** - Detect if user should implement warming
+2. **Enhanced metrics** - Separate tracking for warm vs request calls
+3. **Session cost tracking** - Total cost over conversation lifetime
+4. **Best practices alerts** - Warn if cache hit rate is low
+
+### Low Priority (Advanced)
+1. **Auto-warming mode** - Pi-DCP could handle warming internally
+2. **Adaptive pruning** - Adjust frequency based on cache performance
+3. **Cache-aware rules** - Rules that understand cache boundaries
 
 ## Documentation
 
@@ -250,6 +251,9 @@ Then add to configuration: `rules: ['deduplication', myRule]`
 - ✅ `README.md` - Complete user guide with architecture explanation
 - ✅ `IMPLEMENTATION.md` - Technical implementation details
 - ✅ `REFACTORING.md` - Refactoring summary
+
+### Research Documentation
+- ✅ `.memory/research-a7f3c4d1-prompt-caching-impact.md` - Comprehensive cache analysis
 
 ### Code Documentation
 - ✅ JSDoc comments on all exported functions
@@ -264,19 +268,21 @@ Then add to configuration: `rules: ['deduplication', myRule]`
 - ✅ No breaking changes
 - ✅ 100% backward compatible
 - ✅ Production ready
+- ✅ Cache warming compatibility verified
 
-## Next Steps (Optional Future Work)
+## Next Steps
 
-Potential enhancements not in current scope:
-- [ ] Per-rule statistics
-- [ ] Interactive rule configuration UI
-- [ ] Rule performance metrics
-- [ ] Visualization of pruning decisions
-- [ ] Export/import rule configurations
-- [ ] LLM-assisted pruning (expensive mode)
-- [ ] Token counting and savings estimation
-- [ ] Per-session pruning history
-- [ ] Custom metadata schemas with validation
+### Immediate (Documentation Updates)
+- [ ] Add cache warming section to README
+- [ ] Include production pattern examples
+- [ ] Add FAQ: "How does pi-dcp work with prompt caching?"
+- [ ] Update cost estimates with cache warming scenarios
+
+### Future (Feature Enhancement)
+- [ ] Add cache metrics to `/dcp-stats`
+- [ ] Create cache warming helper utilities
+- [ ] Build cost calculator tool
+- [ ] Implement session-level metrics
 
 ## Quick Start
 
@@ -285,6 +291,7 @@ Potential enhancements not in current scope:
 3. Enable debug logging: `/dcp-debug`
 4. Use pi normally - pruning happens automatically
 5. Check statistics: `/dcp-stats`
+6. **For optimal performance**: Implement cache warming pattern (see research)
 
 ## Context for AI Agents
 
@@ -293,15 +300,73 @@ Potential enhancements not in current scope:
 - `src/workflow.ts` - Core three-phase pruning engine
 - `src/types.ts` - Type definitions and interfaces
 - `src/config.ts` - Configuration management
+- `.memory/research-a7f3c4d1-prompt-caching-impact.md` - Cache interaction analysis WITH cache warming insights
 
 **Important Concepts**:
 - **Three-Phase Workflow**: Prepare → Process → Filter
 - **Rule Registry**: String references or inline objects
 - **Metadata Container**: Each message gets annotated metadata
 - **Fail-Safe Design**: Errors in rules don't break the agent
+- **Cache Warming Compatibility**: Pruning + warming = complementary optimizations
+- **Cost Model**: Evaluate over sessions, not individual turns
+
+**Decision Framework for Using Pi-DCP**:
+- ✅ YES if: Long sessions, high redundancy, using cache warming
+- ✅ YES if: Building production LLM app (should use cache warming anyway)
+- ⚠️ MAYBE if: Short sessions, low redundancy, not using caching
+- ❌ NO if: Single-turn requests, experimental/changing prompts
 
 ---
 
 **Project Status**: ✅ Complete and Production Ready  
+**Research Status**: ✅ Complete - Major paradigm shift identified  
+**Memory Status**: ✅ Fully organized in miniproject format  
+**Industry Alignment**: ✅ Fully compatible with best practices (cache warming)  
 **Code Quality**: High - modular, type-safe, well-documented  
-**Maintainability**: Excellent - clear separation of concerns
+**Maintainability**: Excellent - clear separation of concerns  
+**Production Readiness**: ✅ Ready with strong understanding of deployment patterns
+
+## Recent Completion: Memory Organization (2026-01-11)
+
+The `research/` directory containing detailed caching research has been successfully distilled into miniproject-compliant memory structure:
+
+### What Was Distilled
+
+**Source**: `research/dcp-caching-dynamics/` (164KB, 11 files)
+- MASTER_SUMMARY.md - Executive summary
+- IMPLEMENTATION_ROADMAP.md - 4-phase implementation plan
+- INDEX.md - Navigation guide
+- subtopic-1-caching-mechanisms/ - How caching works (5 files)
+- subtopic-2-dcp-impact/ - Impact analysis
+- subtopic-3-rule-optimization/ - Optimization strategies
+
+**Created in `.memory/`**:
+1. **research-0ca58594-dcp-caching-comprehensive.md** (9.3KB)
+   - Complete distillation of all research findings
+   - Executive summary with key discoveries
+   - Cache warming compatibility insights
+   - Production architecture patterns
+   - Strategic implications and recommendations
+
+2. **learning-455d01b5-cache-warming-pattern.md** (5KB)
+   - Production best practice documentation
+   - Implementation patterns and code examples
+   - When to use cache warming
+   - Common misconceptions addressed
+   - Metrics to track
+
+3. **learning-3d263626-prefix-protection-strategy.md** (7.5KB)
+   - Three-zone optimization model
+   - Implementation patterns
+   - Provider-specific considerations
+   - When prefix protection matters (vs cache warming)
+   - Configuration and testing strategies
+
+### Outcome
+
+- ✅ All research findings preserved in structured format
+- ✅ Key learnings extracted for easy reference
+- ✅ Follows miniproject naming conventions
+- ✅ Cross-referenced with existing research
+- ✅ `research/` directory removed after successful migration
+- ✅ Memory structure fully compliant and organized

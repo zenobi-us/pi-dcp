@@ -1,14 +1,9 @@
 {
-  "name": "pi-dcp",
-  "version": "0.1.0",
+  "name": "@zenobius/pi-dcp",
+  "version": "0.1.0-next.4",
   "type": "module",
   "description": "Dynamic Context Pruning extension for pi - intelligently removes obsolete messages to optimize token usage",
   "main": "./index.ts",
-  "scripts": {
-    "dev": "bun run index.ts",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test"
-  },
   "keywords": [
     "pi",
     "pi-extension",
@@ -26,7 +21,9 @@
     "typescript": "^5.0.0"
   },
   "pi": {
-    "extensions": ["./index.ts"]
+    "extensions": [
+      "./index.ts"
+    ]
   },
   "dependencies": {
     "bunfig": "^0.15.6"

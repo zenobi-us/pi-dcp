@@ -1,6 +1,6 @@
 {
   "name": "@zenobius/pi-dcp",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "description": "Dynamic Context Pruning extension for pi - intelligently removes obsolete messages to optimize token usage",
   "main": "./index.ts",

@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0](https://github.com/zenobi-us/pi-dcp/compare/v0.0.1...v0.1.0) (2026-02-03)
+
+
+### Features
+
+* add tools expansion control and banner ([5c81aac](https://github.com/zenobi-us/pi-dcp/commit/5c81aac2d31df0ab7d0684a33f1947b65b9760e5))
+
+
+### Bug Fixes
+
+* update installation instructions to require cloning into extensions directory ([89ce1e2](https://github.com/zenobi-us/pi-dcp/commit/89ce1e2dbeacc42a69f7d38b46040ce4f6aa4620))
+
 ## 0.0.1 (2026-01-10)
 
 

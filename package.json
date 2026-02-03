@@ -8,7 +8,8 @@
     "pi",
     "pi-extension",
     "context-pruning",
-    "token-optimization"
+    "token-optimization",
+    "pi-package"
   ],
   "author": "",
   "license": "MIT",

@@ -1,5 +1,7 @@
 # Pi-DCP: Dynamic Context Pruning Extension
 
+![Monolith logo](pi-dcp-banner.png)
+
 Intelligently prunes conversation context to optimize token usage while preserving conversation coherence.
 
 ## Features

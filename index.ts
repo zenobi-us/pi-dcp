@@ -24,6 +24,7 @@ import { createDebugCommand } from "./src/cmds/debug";
 import { createToggleCommand } from "./src/cmds/toggle";
 import { createRecentCommand } from "./src/cmds/recent";
 import { createInitCommand } from "./src/cmds/init";
+import { createToolsExpandedCommand } from "./src/cmds/tools-expanded";
 import { dcpLogsCommand } from "./src/cmds/logs";
 import { createContextEventHandler } from "./src/events/context";
 import { createSessionStartEventHandler } from "./src/events/sessionStart";
@@ -64,6 +65,7 @@ export default async function (pi: ExtensionAPI) {
 
 	pi.registerCommand("dcp-init", createInitCommand());
 	pi.registerCommand("dcp-toggle", createToggleCommand(config));
+	pi.registerCommand("dcp-tools", createToolsExpandedCommand());
 
 	if (!config.enabled) {
 		return; // Exit early if extension is disabled

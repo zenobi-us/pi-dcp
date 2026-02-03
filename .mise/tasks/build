@@ -2,5 +2,6 @@
 #MISE description="Build the project"
 #MISE sources=["src/**/*"]
 #MISE outputs=["dist/index.js"]
+#MISE depends=["setup"]
 
 bun build ./index.ts --outdir dist --target bun
